@@ -1,0 +1,7 @@
+apiVersion: apps.yufan.com/v1
+kind: ApplicationDemo
+metadata:
+  name: applicationdemo-sample
+spec:
+  # Add fields here
+  foo: bar

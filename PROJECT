@@ -1,0 +1,7 @@
+domain: yufan.com
+repo: yufan.info/m/v2
+resources:
+- group: apps
+  kind: ApplicationDemo
+  version: v1
+version: "2"

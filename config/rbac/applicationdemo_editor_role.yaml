@@ -1,0 +1,26 @@
+# permissions to do edit applicationdemoes.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: applicationdemo-editor-role
+rules:
+- apiGroups:
+  - apps.yufan.com
+  resources:
+  - applicationdemoes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apps.yufan.com
+  resources:
+  - applicationdemoes/status
+  verbs:
+  - get
+  - patch
+  - update
