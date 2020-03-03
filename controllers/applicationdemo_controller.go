@@ -45,7 +45,7 @@ func (r *ApplicationDemoReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 	// 1. Print Spec.Detail and Status.Created in log
 	obj := &appsv1.ApplicationDemo{}
 	if err := r.Get(ctx, req.NamespacedName, obj); err != nil {
-		fmt.Errorf("couldn't find object:%s", req.String())
+		_ = fmt.Errorf("couldn't find object:%s", req.String())
 	} else {
 		//打印Detail和Created
 		log.V(1).Info("Successfully get detail", "Detail", obj.Spec.Detail)
@@ -54,8 +54,13 @@ func (r *ApplicationDemoReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 	// 2. Change Created
 	if !obj.Status.Created {
 		obj.Status.Created = true
-		r.Update(ctx, obj)
+		_ = r.Update(ctx, obj)
 	}
+	obj = &appsv1.ApplicationDemo{}
+	obj.Status.Created = false
+	obj.Spec.Detail = "detail"
+	obj.Spec.Foo = "foo"
+	_ = r.Create(ctx, obj)
 
 	return ctrl.Result{}, nil
 }
