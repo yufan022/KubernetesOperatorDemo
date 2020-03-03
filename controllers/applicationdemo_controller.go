@@ -56,11 +56,11 @@ func (r *ApplicationDemoReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 		obj.Status.Created = true
 		_ = r.Update(ctx, obj)
 	}
-	obj = &appsv1.ApplicationDemo{}
-	obj.Status.Created = false
-	obj.Spec.Detail = "detail"
-	obj.Spec.Foo = "foo"
-	obj.Namespace = "operator-test"
+	newObj := &appsv1.ApplicationDemo{}
+	newObj.Status.Created = false
+	newObj.Spec.Detail = "detail"
+	newObj.Spec.Foo = "foo"
+	newObj.Namespace = obj.Namespace
 	if err := r.Create(ctx, obj); err != nil {
 		log.Info(err.Error())
 	} else {
