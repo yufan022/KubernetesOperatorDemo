@@ -60,7 +60,11 @@ func (r *ApplicationDemoReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 	obj.Status.Created = false
 	obj.Spec.Detail = "detail"
 	obj.Spec.Foo = "foo"
-	_ = r.Create(ctx, obj)
+	if err := r.Create(ctx, obj); err != nil {
+		log.Info("create error")
+	} else {
+		log.Info("create success")
+	}
 
 	return ctrl.Result{}, nil
 }
