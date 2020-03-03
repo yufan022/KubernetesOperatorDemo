@@ -17,6 +17,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -37,10 +38,24 @@ type ApplicationDemoReconciler struct {
 // +kubebuilder:rbac:groups=apps.yufan.com,resources=applicationdemoes/status,verbs=get;update;patch
 
 func (r *ApplicationDemoReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	_ = context.Background()
-	_ = r.Log.WithValues("applicationdemo", req.NamespacedName)
+	ctx := context.Background()
+	log := r.Log.WithValues("applicationdemo", req.NamespacedName)
 
 	// your logic here
+	// 1. Print Spec.Detail and Status.Created in log
+	obj := &appsv1.ApplicationDemo{}
+	if err := r.Get(ctx, req.NamespacedName, obj); err != nil {
+		fmt.Errorf("couldn't find object:%s", req.String())
+	} else {
+		//打印Detail和Created
+		log.V(1).Info("Successfully get detail", "Detail", obj.Spec.Detail)
+		log.V(1).Info("", "Created", obj.Status.Created)
+	}
+	// 2. Change Created
+	if !obj.Status.Created {
+		obj.Status.Created = true
+		r.Update(ctx, obj)
+	}
 
 	return ctrl.Result{}, nil
 }

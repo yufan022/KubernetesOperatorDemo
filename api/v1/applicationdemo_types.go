@@ -28,13 +28,15 @@ type ApplicationDemoSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of ApplicationDemo. Edit ApplicationDemo_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	Foo    string `json:"foo,omitempty"`
+	Detail string `json:"detail,omitempty"`
 }
 
 // ApplicationDemoStatus defines the observed state of ApplicationDemo
 type ApplicationDemoStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	Created bool `json:"created,omitempy"`
 }
 
 // +kubebuilder:object:root=true
