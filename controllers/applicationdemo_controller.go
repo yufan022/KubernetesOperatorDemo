@@ -65,18 +65,20 @@ func (r *ApplicationDemoReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 			APIVersion: "v1",
 		},
 		ObjectMeta: v1.ObjectMeta{
-			Name:      "111",
+			Name:      "test",
 			Namespace: "default",
 			Labels: map[string]string{
 				"app": "test",
 			},
 		},
-		Spec: appsv1.DeploymentSpec{Selector: &metav1.LabelSelector{
-			MatchLabels: map[string]string{
-				"app": "test",
+		Spec: appsv1.DeploymentSpec{
+			Selector: &metav1.LabelSelector{
+				MatchLabels: map[string]string{
+					"app": "test",
+				},
+				MatchExpressions: nil,
 			},
-			MatchExpressions: nil,
-		}},
+		},
 		Status: appsv1.DeploymentStatus{},
 	}
 	err := r.Create(ctx, &deployment)
