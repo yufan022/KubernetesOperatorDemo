@@ -70,8 +70,10 @@ func (r *ApplicationDemoReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 		Spec:   appsv1.DeploymentSpec{},
 		Status: appsv1.DeploymentStatus{},
 	}
-	r.Create(ctx, &deployment)
-
+	err := r.Create(ctx, &deployment)
+	if err != nil {
+		log.Info("", err)
+	}
 	return ctrl.Result{}, nil
 }
 
