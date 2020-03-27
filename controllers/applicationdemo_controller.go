@@ -26,6 +26,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	appsv1 "k8s.io/api/apps/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	yufanv1 "yufan.info/m/v2/api/v1"
 )
 
@@ -66,8 +67,16 @@ func (r *ApplicationDemoReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 		ObjectMeta: v1.ObjectMeta{
 			Name:      "111",
 			Namespace: "default",
+			Labels: map[string]string{
+				"app": "test",
+			},
 		},
-		Spec:   appsv1.DeploymentSpec{},
+		Spec: appsv1.DeploymentSpec{Selector: &metav1.LabelSelector{
+			MatchLabels: map[string]string{
+				"app": "test",
+			},
+			MatchExpressions: nil,
+		}},
 		Status: appsv1.DeploymentStatus{},
 	}
 	err := r.Create(ctx, &deployment)
