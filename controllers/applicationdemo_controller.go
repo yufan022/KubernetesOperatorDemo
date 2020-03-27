@@ -20,6 +20,8 @@ import (
 	"fmt"
 
 	"github.com/go-logr/logr"
+	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -60,79 +62,84 @@ func (r *ApplicationDemoReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 		log.V(1).Info("Successfully get detail", "Detail", obj.Spec.Detail)
 		log.V(1).Info("", "Created", obj.Status.Created)
 	}
+
 	// 2. Change Created
 	if !obj.Status.Created {
 		obj.Status.Created = true
 		_ = r.Update(ctx, obj)
-	}
-	deployment := appsv1.Deployment{
-		TypeMeta: v1.TypeMeta{
-			Kind:       "deployment",
-			APIVersion: "v1",
-		},
-		ObjectMeta: v1.ObjectMeta{
-			Name:      "test",
-			Namespace: "default",
-			Labels:    labelSelector,
-		},
-		Spec: appsv1.DeploymentSpec{
-			Selector: &metav1.LabelSelector{
-				MatchLabels:      labelSelector,
-				MatchExpressions: nil,
+
+		deployment := appsv1.Deployment{
+			TypeMeta: v1.TypeMeta{
+				Kind:       "deployment",
+				APIVersion: "v1",
 			},
-			Template: corev1.PodTemplateSpec{
-				ObjectMeta: metav1.ObjectMeta{
-					Labels: labelSelector,
+			ObjectMeta: v1.ObjectMeta{
+				Name:      "test",
+				Namespace: "default",
+				Labels:    labelSelector,
+			},
+			Spec: appsv1.DeploymentSpec{
+				Selector: &metav1.LabelSelector{
+					MatchLabels:      labelSelector,
+					MatchExpressions: nil,
 				},
-				Spec: corev1.PodSpec{
-					Volumes:        nil,
-					InitContainers: nil,
-					Containers: []corev1.Container{
-						{
-							Name:  "test",
-							Image: "nginx:1.17.9",
-						},
+				Template: corev1.PodTemplateSpec{
+					ObjectMeta: metav1.ObjectMeta{
+						Labels: labelSelector,
 					},
-					EphemeralContainers:           nil,
-					RestartPolicy:                 "",
-					TerminationGracePeriodSeconds: nil,
-					ActiveDeadlineSeconds:         nil,
-					DNSPolicy:                     "",
-					NodeSelector:                  nil,
-					ServiceAccountName:            "",
-					DeprecatedServiceAccount:      "",
-					AutomountServiceAccountToken:  nil,
-					NodeName:                      "",
-					HostNetwork:                   false,
-					HostPID:                       false,
-					HostIPC:                       false,
-					ShareProcessNamespace:         nil,
-					SecurityContext:               nil,
-					ImagePullSecrets:              nil,
-					Hostname:                      "",
-					Subdomain:                     "",
-					Affinity:                      nil,
-					SchedulerName:                 "",
-					Tolerations:                   nil,
-					HostAliases:                   nil,
-					PriorityClassName:             "",
-					Priority:                      nil,
-					DNSConfig:                     nil,
-					ReadinessGates:                nil,
-					RuntimeClassName:              nil,
-					EnableServiceLinks:            nil,
-					PreemptionPolicy:              nil,
-					Overhead:                      nil,
-					TopologySpreadConstraints:     nil,
+					Spec: corev1.PodSpec{
+						Volumes:        nil,
+						InitContainers: nil,
+						Containers: []corev1.Container{
+							{
+								Name:  "test",
+								Image: "nginx:1.17.9",
+							},
+						},
+						EphemeralContainers:           nil,
+						RestartPolicy:                 "",
+						TerminationGracePeriodSeconds: nil,
+						ActiveDeadlineSeconds:         nil,
+						DNSPolicy:                     "",
+						NodeSelector:                  nil,
+						ServiceAccountName:            "",
+						DeprecatedServiceAccount:      "",
+						AutomountServiceAccountToken:  nil,
+						NodeName:                      "",
+						HostNetwork:                   false,
+						HostPID:                       false,
+						HostIPC:                       false,
+						ShareProcessNamespace:         nil,
+						SecurityContext:               nil,
+						ImagePullSecrets:              nil,
+						Hostname:                      "",
+						Subdomain:                     "",
+						Affinity:                      nil,
+						SchedulerName:                 "",
+						Tolerations:                   nil,
+						HostAliases:                   nil,
+						PriorityClassName:             "",
+						Priority:                      nil,
+						DNSConfig:                     nil,
+						ReadinessGates:                nil,
+						RuntimeClassName:              nil,
+						EnableServiceLinks:            nil,
+						PreemptionPolicy:              nil,
+						Overhead:                      nil,
+						TopologySpreadConstraints:     nil,
+					},
 				},
 			},
-		},
-		Status: appsv1.DeploymentStatus{},
+			Status: appsv1.DeploymentStatus{},
+		}
+		err := r.Create(ctx, &deployment)
+		if err != nil {
+			log.Info("", err)
+		}
 	}
-	err := r.Create(ctx, &deployment)
-	if err != nil {
-		log.Info("", err)
-	}
+
+	fmt.Print("11")
+
 	return ctrl.Result{}, nil
 }
 
