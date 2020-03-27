@@ -27,8 +27,14 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	corev1 "k8s.io/api/core/v1"
 	yufanv1 "yufan.info/m/v2/api/v1"
 )
+
+var labelSelector = map[string]string{
+	"app": "test",
+}
 
 // ApplicationDemoReconciler reconciles a ApplicationDemo object
 type ApplicationDemoReconciler struct {
@@ -67,16 +73,17 @@ func (r *ApplicationDemoReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 		ObjectMeta: v1.ObjectMeta{
 			Name:      "test",
 			Namespace: "default",
-			Labels: map[string]string{
-				"app": "test",
-			},
+			Labels:    labelSelector,
 		},
 		Spec: appsv1.DeploymentSpec{
 			Selector: &metav1.LabelSelector{
-				MatchLabels: map[string]string{
-					"app": "test",
-				},
+				MatchLabels:      labelSelector,
 				MatchExpressions: nil,
+			},
+			Template: corev1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: labelSelector,
+				},
 			},
 		},
 		Status: appsv1.DeploymentStatus{},
