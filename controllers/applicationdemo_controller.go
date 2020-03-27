@@ -59,10 +59,16 @@ func (r *ApplicationDemoReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 		_ = r.Update(ctx, obj)
 	}
 	deployment := appsv1.Deployment{
-		TypeMeta:   v1.TypeMeta{},
-		ObjectMeta: v1.ObjectMeta{Name: "111"},
-		Spec:       appsv1.DeploymentSpec{},
-		Status:     appsv1.DeploymentStatus{},
+		TypeMeta: v1.TypeMeta{
+			Kind:       "deployment",
+			APIVersion: "v1",
+		},
+		ObjectMeta: v1.ObjectMeta{
+			Name:      "111",
+			Namespace: "default",
+		},
+		Spec:   appsv1.DeploymentSpec{},
+		Status: appsv1.DeploymentStatus{},
 	}
 	r.Create(ctx, &deployment)
 
