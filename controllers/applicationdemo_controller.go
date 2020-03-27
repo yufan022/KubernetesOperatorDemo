@@ -20,11 +20,13 @@ import (
 	"fmt"
 
 	"github.com/go-logr/logr"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	appsv1 "yufan.info/m/v2/api/v1"
+	appsv1 "k8s.io/api/apps/v1"
+	yufanv1 "yufan.info/m/v2/api/v1"
 )
 
 // ApplicationDemoReconciler reconciles a ApplicationDemo object
@@ -43,7 +45,7 @@ func (r *ApplicationDemoReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 
 	// your logic here
 	// 1. Print Spec.Detail and Status.Created in log
-	obj := &appsv1.ApplicationDemo{}
+	obj := &yufanv1.ApplicationDemo{}
 	if err := r.Get(ctx, req.NamespacedName, obj); err != nil {
 		_ = fmt.Errorf("couldn't find object:%s", req.String())
 	} else {
@@ -56,13 +58,19 @@ func (r *ApplicationDemoReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 		obj.Status.Created = true
 		_ = r.Update(ctx, obj)
 	}
-	r.Delete(ctx, obj)
+	deployment := appsv1.Deployment{
+		TypeMeta:   v1.TypeMeta{},
+		ObjectMeta: v1.ObjectMeta{},
+		Spec:       appsv1.DeploymentSpec{},
+		Status:     appsv1.DeploymentStatus{},
+	}
+	r.Update(ctx, &deployment)
 
 	return ctrl.Result{}, nil
 }
 
 func (r *ApplicationDemoReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&appsv1.ApplicationDemo{}).
+		For(&yufanv1.ApplicationDemo{}).
 		Complete(r)
 }
